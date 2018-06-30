@@ -1,5 +1,5 @@
 # nx-sys-audioplayer
 
-This is (hopefully) going to be an background-audio-player for the nintendo switch
+This is (hopefully) going to be an background-audio-player (as a custom sysmodule) for the Nintendo Switch.
 
-(partially based on nx-dreport)
+This is partially based on nx-dreport.
