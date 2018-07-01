@@ -43,12 +43,6 @@ void __appInit(void)
     rc = fsdevMountSdmc();
     if (R_FAILED(rc))
         fatalLater(rc);
-    rc = audoutInitialize();
-    if (R_FAILED(rc))
-        fatalLater(rc);
-    rc = audoutStartAudioOut();
-    if (R_FAILED(rc))
-        fatalLater(rc);
     rc = timeInitialize();
     if (R_FAILED(rc))
         fatalLater(rc);

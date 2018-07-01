@@ -28,6 +28,10 @@ int                     curBuf = 0;
 
 int initMp3(const char* file)
 {
+
+    audoutInitialize();
+    audoutStartAudioOut();
+    
 	int err = 0;
 	int encoding = 0;
 
@@ -117,6 +121,7 @@ void exitMp3(void)
 	mpg123_close(mh);
 	mpg123_delete(mh);
 	mpg123_exit();
+	audoutExit();
 }
 
 int fillBuf() {
