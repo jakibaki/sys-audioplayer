@@ -8,6 +8,7 @@
         "chrono": "c",
         "dirent.h": "c",
         "stdio.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "mp3.h": "c"
     }
 }

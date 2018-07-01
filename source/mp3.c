@@ -8,7 +8,7 @@
 #include <switch.h>
 
 
-#define BUF_COUNT 2
+#define BUF_COUNT 16
 
 static size_t			buffSize;
 static mpg123_handle	*mh = NULL;

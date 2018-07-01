@@ -1,6 +1,6 @@
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <dirent.h>
 
 #include <switch.h>
 
@@ -8,8 +8,7 @@
 
 #define ERPT_SAVE_ID 0x80000000000000D1
 #define TITLE_ID 0x4200000000000000
-#define HEAP_SIZE 0x000040000
-
+#define HEAP_SIZE 0x000320000
 
 // we aren't an applet
 u32 __nx_applet_type = AppletType_None;
@@ -91,7 +90,6 @@ void __appExit(void)
     audoutExit();
 }
 
-
 int main(int argc, char **argv)
 {
     (void)argc;
@@ -101,7 +99,19 @@ int main(int argc, char **argv)
     stdout = f;
     stderr = f;
 
-    playMp3("/music/test2.mp3");
+    DIR *dir;
+    struct dirent *ent;
+
+    dir = opendir("/music");
+
+    while ((ent = readdir(dir)))
+    {
+        printf(ent->d_name);
+        char filename[263];
+        snprintf(filename, 263, "/music/%s", ent->d_name);
+        playMp3(filename);
+    }
+    closedir(dir);
 
     fclose(f);
 

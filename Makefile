@@ -16,7 +16,7 @@ EXEFS_SRC	:=	exefs_src
 
 ARCH	:=	-march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE
 
-CFLAGS	:=	-g -std=c11 -Wall -Wextra -O2 -ffunction-sections \
+CFLAGS	:=	-g -Wall -Wextra -O2 -ffunction-sections \
 			$(ARCH) $(DEFINES)
 
 CFLAGS	+=	$(INCLUDE) -D__SWITCH__
