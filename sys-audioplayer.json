@@ -2,7 +2,7 @@
     "name": "sys-audioplayer",
     "title_id": "0x4200000000000000",
     "main_thread_stack_size": "0x00040000",
-    "main_thread_priority": 49,
+    "main_thread_priority": 0,
     "default_cpu_id": 3,
     "process_category": 1,
     "filesystem_access":	{
