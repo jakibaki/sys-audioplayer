@@ -112,8 +112,10 @@ int initMp3(const char* file)
 	if((err = mpg123_init()) != MPG123_OK)
 		return err;
 
+    mpg123_pars* pars = mpg123_new_pars(&err);
+    mpg123_par(pars, MPG123_FORCE_RATE, audoutGetSampleRate(), 0);
 
-	if((mh = mpg123_new(NULL, &err)) == NULL)
+	if((mh = mpg123_parnew(pars, NULL, &err)) == NULL)
 	{
 		printf("Error: %s\n", mpg123_plain_strerror(err));
 		return err;
@@ -133,7 +135,7 @@ int initMp3(const char* file)
 	 * it).
 	 */
 	mpg123_format_none(mh);
-	mpg123_format(mh, rate, channels, encoding);
+	mpg123_format(mh, audoutGetSampleRate(), audoutGetChannelCount(), encoding);
 
 	/*
 	 * Buffer could be almost any size here, mpg123_outblock() is just some
