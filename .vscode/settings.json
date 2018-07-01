@@ -9,6 +9,9 @@
         "dirent.h": "c",
         "stdio.h": "c",
         "string.h": "c",
-        "mp3.h": "c"
+        "mp3.h": "c",
+        "__string": "c",
+        "string": "c",
+        "string_view": "c"
     }
 }

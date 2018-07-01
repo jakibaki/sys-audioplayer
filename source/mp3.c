@@ -4,11 +4,13 @@
 #include <malloc.h>
 #include <math.h>
 #include <mpg123.h>
+#include <time.h>
+#include "util.h"
 
 #include <switch.h>
 
 
-#define BUF_COUNT 16
+#define BUF_COUNT 4
 
 static size_t			buffSize;
 static mpg123_handle	*mh = NULL;
@@ -140,14 +142,29 @@ void playMp3(char* file) {
     for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
         fillBuf();
 
-    
+    time_t unixTime = time(NULL);
+
     int lastFill = 1;
     while(appletMainLoop() && lastFill)
     {
-        for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+	    for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
             lastFill = fillBuf();
         for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
-            audoutWaitPlayFinish(&audout_released_buf, &released_count, U64_MAX);
+            audoutWaitPlayFinish(&audout_released_buf, &released_count, 1000000000L);
+
+		// Workaround to find out if the switch just woke up from sleep. If it did clear the buffer in order to prevent issues.
+		time_t newTime = time(NULL);
+		if(unixTime + 2 < newTime) {
+			printf("Just woke up from sleep!\n");
+			printf("Cleaning up everything and getting ready for a fresh new start!\n");
+			audoutExit();
+			audoutInitialize();
+			audoutStartAudioOut();
+			for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+				lastFill = fillBuf();
+		}
+		unixTime = newTime;
+
     }
 
     exitMp3();

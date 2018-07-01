@@ -5,6 +5,7 @@
 #include <switch.h>
 
 #include "mp3.h"
+#include "util.h"
 
 #define ERPT_SAVE_ID 0x80000000000000D1
 #define TITLE_ID 0x4200000000000000
@@ -16,38 +17,6 @@ u32 __nx_applet_type = AppletType_None;
 // setup a fake heap (we don't need the heap anyway)
 char fake_heap[HEAP_SIZE];
 
-void fatalLater(Result err)
-{
-    Handle srv;
-
-    while (R_FAILED(smGetServiceOriginal(&srv, smEncodeName("fatal:u"))))
-    {
-        // wait one sec and retry
-        svcSleepThread(1000000000L);
-    }
-
-    // fatal is here time, fatal like a boss
-    IpcCommand c;
-    ipcInitialize(&c);
-    ipcSendPid(&c);
-    struct
-    {
-        u64 magic;
-        u64 cmd_id;
-        u64 result;
-        u64 unknown;
-    } * raw;
-
-    raw = ipcPrepareHeader(&c, sizeof(*raw));
-
-    raw->magic = SFCI_MAGIC;
-    raw->cmd_id = 1;
-    raw->result = err;
-    raw->unknown = 0;
-
-    ipcDispatch(srv);
-    svcCloseHandle(srv);
-}
 
 // we override libnx internals to do a minimal init
 void __libnx_initheap(void)
@@ -80,6 +49,10 @@ void __appInit(void)
     rc = audoutStartAudioOut();
     if (R_FAILED(rc))
         fatalLater(rc);
+    rc = timeInitialize();
+    if (R_FAILED(rc))
+        fatalLater(rc);
+    
 }
 
 void __appExit(void)
@@ -88,6 +61,7 @@ void __appExit(void)
     fsExit();
     smExit();
     audoutExit();
+    timeExit();
 }
 
 int main(int argc, char **argv)
