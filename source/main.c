@@ -135,7 +135,7 @@ int initMp3(const char* file)
 	 * it).
 	 */
 	mpg123_format_none(mh);
-	mpg123_format(mh, audoutGetSampleRate(), audoutGetChannelCount(), encoding);
+	mpg123_format(mh, rate, channels, encoding);
 
 	/*
 	 * Buffer could be almost any size here, mpg123_outblock() is just some
