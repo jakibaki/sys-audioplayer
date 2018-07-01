@@ -213,8 +213,6 @@ int main(int argc, char **argv)
     stdout = f;
     stderr = f;
 
-    Result rc = 0;
-
     audoutInitialize();
     audoutStartAudioOut();
     initMp3("/test.mp3");
@@ -228,8 +226,7 @@ int main(int argc, char **argv)
     for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
         fillBuf();
     
-    int i = 0;
-    while(1)
+    while(appletMainLoop())
     {
         for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
             fillBuf();
