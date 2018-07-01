@@ -65,7 +65,7 @@ void __libnx_initheap(void)
 void __appInit(void)
 {
     Result rc;
-    svcSleepThread(10000000000L);
+    svcSleepThread(5000000000L);
 
     rc = smInitialize();
     if (R_FAILED(rc))
@@ -76,6 +76,12 @@ void __appInit(void)
     rc = fsdevMountSdmc();
     if (R_FAILED(rc))
         fatalLater(rc);
+    rc = audoutInitialize();
+    if (R_FAILED(rc))
+        fatalLater(rc);
+    rc = audoutStartAudioOut();
+    if (R_FAILED(rc))
+        fatalLater(rc);
 }
 
 void __appExit(void)
@@ -83,6 +89,7 @@ void __appExit(void)
     fsdevUnmountAll();
     fsExit();
     smExit();
+    audoutExit();
 }
 
 
@@ -114,6 +121,7 @@ int initMp3(const char* file)
 
     mpg123_pars* pars = mpg123_new_pars(&err);
     mpg123_par(pars, MPG123_FORCE_RATE, audoutGetSampleRate(), 0);
+    mpg123_par(pars, MPG123_FORCE_STEREO, 1, 0);
 
 	if((mh = mpg123_parnew(pars, NULL, &err)) == NULL)
 	{
@@ -142,6 +150,10 @@ int initMp3(const char* file)
 	 * recommendation. The size should be a multiple of the PCM frame size.
 	 */
 	buffSize = mpg123_outblock(mh) * 16;
+
+    for(int curBuf = 0; curBuf < BUF_COUNT; curBuf++) {
+        buffData[curBuf] = memalign(0x1000, buffSize);
+    }
 
 	return 0;
 }
@@ -184,13 +196,18 @@ uint64_t decodeMp3(void* buffer)
  */
 void exitMp3(void)
 {
+    for(int curBuf = 0; curBuf < BUF_COUNT; curBuf++) {
+        free(buffData[curBuf]);
+    }
 	mpg123_close(mh);
 	mpg123_delete(mh);
 	mpg123_exit();
 }
 
 int fillBuf() {
-    decodeMp3(buffData[curBuf]);
+    int count = decodeMp3(buffData[curBuf]);
+    if(count == 0)
+        return count;
     audiobuf[curBuf].next = 0;
     audiobuf[curBuf].buffer = buffData[curBuf];
     audiobuf[curBuf].buffer_size = buffSize;
@@ -198,11 +215,30 @@ int fillBuf() {
     audiobuf[curBuf].data_offset = 0;
     audoutAppendAudioOutBuffer(&audiobuf[curBuf]);
     swapbuf;
-    return 0;
+    return count;
 }
 
 
+void playMp3(char* file) {
+    initMp3(file);
 
+    u32 released_count = 0;
+    
+    for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+        fillBuf();
+
+    
+    int lastFill = 1;
+    while(appletMainLoop() && lastFill)
+    {
+        for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+            lastFill = fillBuf();
+        for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+            audoutWaitPlayFinish(&audout_released_buf, &released_count, U64_MAX);
+    }
+
+    exitMp3();
+}
 
 int main(int argc, char **argv)
 {
@@ -213,30 +249,9 @@ int main(int argc, char **argv)
     stdout = f;
     stderr = f;
 
-    audoutInitialize();
-    audoutStartAudioOut();
-    initMp3("/test.mp3");
-
-    u32 released_count = 0;
-
-    for(int curBuf = 0; curBuf < BUF_COUNT; curBuf++)
-        buffData[curBuf] = memalign(0x1000, buffSize);
-
+    playMp3("/test.mp3");
+    playMp3("/test2.mp3");
     
-    for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
-        fillBuf();
-    
-    while(appletMainLoop())
-    {
-        for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
-            fillBuf();
-    
-        for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
-            audoutWaitPlayFinish(&audout_released_buf, &released_count, U64_MAX);
-
-    }
-    printf("Yo motherfucker, guess who's here.\n");
-
 
     fclose(f);
 

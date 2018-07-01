@@ -2,6 +2,9 @@
     "files.associations": {
         "__locale": "c",
         "stdlib.h": "c",
-        "inet.h": "c"
+        "inet.h": "c",
+        "__bit_reference": "c",
+        "bitset": "c",
+        "chrono": "c"
     }
 }
