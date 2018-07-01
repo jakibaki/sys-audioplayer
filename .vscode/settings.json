@@ -5,6 +5,9 @@
         "inet.h": "c",
         "__bit_reference": "c",
         "bitset": "c",
-        "chrono": "c"
+        "chrono": "c",
+        "dirent.h": "c",
+        "stdio.h": "c",
+        "string.h": "c"
     }
 }
