@@ -10,7 +10,7 @@
 #include <switch.h>
 
 
-#define BUF_COUNT 4
+#define BUF_COUNT 2
 
 static size_t			buffSize;
 static mpg123_handle	*mh = NULL;
@@ -165,8 +165,11 @@ void playMp3(char* file) {
 			audoutExit();
 			audoutInitialize();
 			audoutStartAudioOut();
+
+			mpg123_seek_frame(mh, -mpg123_timeframe(mh, 2), SEEK_CUR);
 			for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
 				lastFill = fillBuf();
+			
 		}
 		unixTime = newTime;
 

@@ -5,9 +5,6 @@
     "main_thread_priority": 10,
     "default_cpu_id": 3,
     "process_category": 1,
-    "filesystem_access":	{
-		"permissions":	"0xFFFFFFFFFFFFFFFF"
-	},
     "kernel_capabilities": {
         "handle_table_size": 128,
         "syscalls": {
@@ -70,3 +67,4 @@
         }
     }
 }
+

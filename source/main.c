@@ -32,8 +32,7 @@ void __libnx_initheap(void)
 void __appInit(void)
 {
     Result rc;
-    svcSleepThread(5000000000L);
-
+    svcSleepThread(20000000000L);
     rc = smInitialize();
     if (R_FAILED(rc))
         fatalLater(rc);
@@ -46,7 +45,6 @@ void __appInit(void)
     rc = timeInitialize();
     if (R_FAILED(rc))
         fatalLater(rc);
-    
 }
 
 void __appExit(void)
@@ -63,9 +61,10 @@ int main(int argc, char **argv)
     (void)argc;
     (void)argv;
     FILE *f = fopen("/log", "w");
-
     stdout = f;
     stderr = f;
+
+
 
     DIR *dir;
     struct dirent *ent;
