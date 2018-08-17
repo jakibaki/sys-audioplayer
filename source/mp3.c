@@ -105,6 +105,7 @@ uint8_t channelMp3(void)
  */
 uint64_t decodeMp3(void* buffer)
 {
+	memset(buffer, 0, buffSize);
 	size_t done = 0;
 	mpg123_read(mh, buffer, buffSize, &done);
 	return done / (sizeof(int16_t));
