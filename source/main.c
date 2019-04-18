@@ -45,6 +45,9 @@ void __appInit(void)
     rc = timeInitialize();
     if (R_FAILED(rc))
         fatalLater(rc);
+    rc = hidInitialize();
+    if (R_FAILED(rc))
+        fatalLater(rc);
 }
 
 void __appExit(void)
@@ -63,9 +66,7 @@ int main(int argc, char **argv)
     FILE *f = fopen("/log", "w");
     stdout = f;
     stderr = f;
-
-
-
+        
     DIR *dir;
     struct dirent *ent;
 
