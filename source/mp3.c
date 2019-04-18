@@ -139,6 +139,20 @@ int fillBuf() {
     return count;
 }
 
+void inputPoller(char* file)
+{
+        hidScanInput();
+        u64 kDown = hidKeysDown(CONTROLLER_P1_AUTO);
+        u64 kHeld = hidKeysHeld(CONTROLLER_P1_AUTO);
+
+        if ((kDown & KEY_MINUS || kDown & KEY_Y) && (kHeld & KEY_MINUS && kHeld & KEY_Y))
+        {
+			initMp3(file);
+            audoutExit();
+			audoutInitialize();
+			audoutStartAudioOut();
+        }
+}
 
 void playMp3(char* file) {
     initMp3(file);
@@ -153,6 +167,7 @@ void playMp3(char* file) {
     int lastFill = 1;
     while(appletMainLoop() && lastFill)
     {
+		inputPoller(file);
 	    for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
             lastFill = fillBuf();
         for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
