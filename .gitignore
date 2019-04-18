@@ -1,0 +1,7 @@
+build/
+.vscode/ipch
+*.elf
+*.nso
+*.npdm
+*.nsp
+*.kip
