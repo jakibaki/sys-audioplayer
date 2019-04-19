@@ -77,7 +77,13 @@ int main(int argc, char **argv)
         printf(ent->d_name);
         char filename[263];
         snprintf(filename, 263, "/music/%s", ent->d_name);
-        playMp3(filename);
+         // preparations for repeat song Implementation
+        //repeats the song amount of times now 100 times preset as test ...
+        for(int i = 0; i < 100; i ++)
+        {
+            playMp3(filename);
+        }
+        
     }
     closedir(dir);
 
