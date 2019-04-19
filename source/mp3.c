@@ -16,6 +16,7 @@ static size_t			buffSize;
 static mpg123_handle	*mh = NULL;
 static uint32_t			rate;
 static uint8_t			channels;
+bool Continue = true;
 
 AudioOutBuffer*         audout_released_buf;
 
@@ -152,6 +153,13 @@ void inputPoller(char* file)
 			audoutInitialize();
 			audoutStartAudioOut();
         }
+		if ((kDown & KEY_MINUS || kDown & KEY_X) && (kHeld & KEY_MINUS && kHeld & KEY_X))
+        {
+			//PALY/PAUSE
+			Continue = !Continue;
+			for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+			fillBuf();
+        }
 }
 
 void playMp3(char* file) {
@@ -168,14 +176,20 @@ void playMp3(char* file) {
     while(appletMainLoop() && lastFill)
     {
 		inputPoller(file);
-	    for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
-            lastFill = fillBuf();
+		
+	    if(Continue)
+		{
+			for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
+			lastFill = fillBuf();
+		}
+
         for(int curBuf = 0; curBuf < BUF_COUNT/2; curBuf++)
             audoutWaitPlayFinish(&audout_released_buf, &released_count, 1000000000L);
 
 		// Workaround to find out if the switch just woke up from sleep. If it did clear the buffer in order to prevent issues.
 		time_t newTime = time(NULL);
-		if(unixTime + 2 < newTime) {
+		if(unixTime + 2 < newTime && Continue) 
+		{
 			printf("Just woke up from sleep!\n");
 			printf("Cleaning up everything and getting ready for a fresh new start!\n");
 			audoutExit();
