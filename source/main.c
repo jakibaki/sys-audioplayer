@@ -29,32 +29,38 @@ void __libnx_initheap(void)
     fake_heap_end = fake_heap + HEAP_SIZE;
 }
 
-void __appInit(void)
+void __attribute__((weak)) __appInit(void)
 {
     Result rc;
-    svcSleepThread(20000000000L);
+    svcSleepThread(10000000000L);
+
     rc = smInitialize();
     if (R_FAILED(rc))
-        fatalLater(rc);
-    rc = fsInitialize();
-    if (R_FAILED(rc))
-        fatalLater(rc);
-    rc = fsdevMountSdmc();
-    if (R_FAILED(rc))
-        fatalLater(rc);
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
+        
     rc = timeInitialize();
     if (R_FAILED(rc))
-        fatalLater(rc);
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_Time));
+
+    __libnx_init_time();
+
     rc = hidInitialize();
     if (R_FAILED(rc))
-        fatalLater(rc);
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
+
+    rc = fsInitialize();
+    if (R_FAILED(rc))
+        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_FS));
+
+    fsdevMountSdmc();
 }
 
-void __appExit(void)
+void __attribute__((weak)) __appExit(void)
 {
     fsdevUnmountAll();
     fsExit();
     smExit();
+    hidExit();
     audoutExit();
     timeExit();
 }
