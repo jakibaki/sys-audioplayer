@@ -5,7 +5,6 @@
 #include <switch.h>
 
 #include "mp3.h"
-#include "util.h"
 
 #define ERPT_SAVE_ID 0x80000000000000D1
 #define TITLE_ID 0x4200000000000000
