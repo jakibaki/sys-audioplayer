@@ -36,21 +36,21 @@ void __attribute__((weak)) __appInit(void)
 
     rc = smInitialize();
     if (R_FAILED(rc))
-        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
+        fatalThrow(MAKERESULT(Module_Libnx, LibnxError_InitFail_SM));
         
     rc = timeInitialize();
     if (R_FAILED(rc))
-        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_Time));
+        fatalThrow(MAKERESULT(Module_Libnx, LibnxError_InitFail_Time));
 
     __libnx_init_time();
 
     rc = hidInitialize();
     if (R_FAILED(rc))
-        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
+        fatalThrow(MAKERESULT(Module_Libnx, LibnxError_InitFail_HID));
 
     rc = fsInitialize();
     if (R_FAILED(rc))
-        fatalSimple(MAKERESULT(Module_Libnx, LibnxError_InitFail_FS));
+        fatalThrow(MAKERESULT(Module_Libnx, LibnxError_InitFail_FS));
 
     fsdevMountSdmc();
 }
