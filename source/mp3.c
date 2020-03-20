@@ -5,7 +5,6 @@
 #include <math.h>
 #include <mpg123.h>
 #include <time.h>
-#include "util.h"
 
 #include <switch.h>
 
