@@ -6,8 +6,8 @@ This is a `WIP background-audio-player as a custom Boot2 sysmodule` for the Nint
 
 this is developed for `Atmosphere/Kosmos` , Not tested on other CFW
 
-1. Compiled Module Goes to /atmosphere/titles/`4200000000000000`/exefs.nsp
-2. flag the Mudule activated by making blank file /atmosphere/titles/`4200000000000000`/flags/boot2.flag
+1. Compiled Module Goes to /atmosphere/contents/`4200000000000000`/exefs.nsp
+2. flag the Mudule activated by making blank file /atmosphere/contents/`4200000000000000`/flags/boot2.flag
 3. add your songs (MP3 ONLY) to /music Directory on Root of your Sd Card
 4. enable the module nor by restart console, or using latest Kosmos ToolBox.
 
